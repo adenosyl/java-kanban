@@ -4,13 +4,11 @@ public class Main {
         System.out.println();
         TaskManager taskManager = new TaskManager();
 
-        // Обычные задачи
         Task task1 = new Task("Поучиться", "Открыть Яндекс.Практикум и завершить спринт 4");
         Task task2 = new Task("Отдохнуть", "Запустить Dota2 и выиграть мид");
         taskManager.addTask(task1);
         taskManager.addTask(task2);
 
-        // Эпик с двумя подзадачами
         Epic epic1 = new Epic("Переезд", "Переехать в следующем месяце в новую квартиру");
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("Собрать коробки", "Упаковать все свои вещи по коробкам", epic1.getId());
@@ -40,13 +38,13 @@ public class Main {
             System.out.println(subtask);
         }
 
-        subtask1.setStatus(Task.TaskStatus.IN_PROGRESS);
+        subtask1.setStatus(TaskStatus.IN_PROGRESS);
         taskManager.updateSubtask(subtask1);
 
-        subtask2.setStatus(Task.TaskStatus.DONE);
+        subtask2.setStatus(TaskStatus.DONE);
         taskManager.updateSubtask(subtask2);
 
-        subtask3.setStatus(Task.TaskStatus.DONE);
+        subtask3.setStatus(TaskStatus.DONE);
         taskManager.updateSubtask(subtask3);
 
         System.out.println();
