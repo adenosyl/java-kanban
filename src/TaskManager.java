@@ -7,10 +7,6 @@ public class TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
-    private int generateId() {
-        return id++;
-    }
-
     public void addTask(Task task) {
         task.setId(generateId());
         tasks.put(task.getId(), task);
@@ -100,6 +96,10 @@ public class TaskManager {
                 updateEpicStatus(epic);
             }
         }
+    }
+
+    private int generateId() {
+        return id++;
     }
 
     private void updateEpicStatus(Epic epic) {
