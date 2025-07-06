@@ -2,7 +2,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Поехали!");
         System.out.println();
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefault();
 
         Task task1 = new Task("Поучиться", "Открыть Яндекс.Практикум и завершить спринт 4");
         Task task2 = new Task("Отдохнуть", "Запустить Dota2 и выиграть мид");

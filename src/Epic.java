@@ -12,7 +12,7 @@ public class Epic extends Task {
     }
 
     public void removeSubtask(int id) {
-        subtaskIds.remove((Integer) id); // удаление по значению, не по индексу
+        subtaskIds.remove((Integer) id);
     }
 
     public ArrayList<Integer> getSubtaskIds() {
