@@ -1,5 +1,5 @@
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id = 1;
@@ -103,7 +103,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        if (task!= null && tasks.containsKey(task.getId())) {
+        if (task != null && tasks.containsKey(task.getId())) {
             tasks.put(task.getId(), Task.copyOf(task));
         }
     }
@@ -170,6 +170,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return t.getId();
     }
+
     private int generateId() {
         return id++;
     }
