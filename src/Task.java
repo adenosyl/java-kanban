@@ -11,6 +11,33 @@ public class Task {
         this.status = TaskStatus.NEW;
     }
 
+    public Task(Task other) {
+        this.name = other.name;
+        this.description = other.description;
+        this.id = other.id;
+        this.status = other.status;
+    }
+
+    public static Task copyOf(Task t) {
+        if (t == null) return null;
+        if (t instanceof Subtask s) {
+            Subtask copy = new Subtask(s.getName(), s.getDescription(), s.getEpicId());
+            copy.setId(s.getId());
+            copy.setStatus(s.getStatus());
+            return copy;
+        } else if (t instanceof Epic e) {
+            Epic copy = new Epic(e.getName(), e.getDescription());
+            copy.setId(e.getId());
+            copy.setStatus(e.getStatus());
+
+            for (Integer subId : e.getSubtaskIds()) {
+                copy.addSubtask(subId);
+            }
+            return copy;
+        } else {
+            return new Task(t);
+        }
+    }
     public int getId() {
         return id;
     }
