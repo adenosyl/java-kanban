@@ -26,11 +26,11 @@ public interface TaskManager {
 
     void updateSubtask(Subtask subtask);
 
-    void deleteTask(int id);
-
     void deleteEpic(int id);
 
     void deleteSubtask(int id);
+
+    void deleteTask(int id);
 
     List<Task> getHistory();
 }
