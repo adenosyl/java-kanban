@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskManagerTest {
@@ -147,12 +149,16 @@ public class TaskManagerTest {
 
         assertNotEquals("Changed", history.getFirst().getName(), "История должна хранить старую версию задачи.");
     }
+
     @Test
     void historyHasNoDuplicatesAndMovesToTail() {
         // История должна быть без дублей; повторный просмотр переносит задачу в хвост
-        Task a = new Task("A", "d"); taskManager.addTask(a);
-        Task b = new Task("B", "d"); taskManager.addTask(b);
-        Task c = new Task("C", "d"); taskManager.addTask(c);
+        Task a = new Task("A", "d");
+        taskManager.addTask(a);
+        Task b = new Task("B", "d");
+        taskManager.addTask(b);
+        Task c = new Task("C", "d");
+        taskManager.addTask(c);
 
         taskManager.getTaskById(a.getId()); // A
         taskManager.getTaskById(b.getId()); // A,B
@@ -170,9 +176,12 @@ public class TaskManagerTest {
     @Test
     void historyRemovesOnDelete_head_middle_tail() {
         // Удаление задач из менеджера должно удалять их из истории (голова/середина/хвост)
-        Task t1 = new Task("T1","d"); taskManager.addTask(t1);
-        Task t2 = new Task("T2","d"); taskManager.addTask(t2);
-        Task t3 = new Task("T3","d"); taskManager.addTask(t3);
+        Task t1 = new Task("T1", "d");
+        taskManager.addTask(t1);
+        Task t2 = new Task("T2", "d");
+        taskManager.addTask(t2);
+        Task t3 = new Task("T3", "d");
+        taskManager.addTask(t3);
 
         taskManager.getTaskById(t1.getId()); // head
         taskManager.getTaskById(t2.getId()); // middle
@@ -197,21 +206,24 @@ public class TaskManagerTest {
     @Test
     void historyIsUnlimited() {
         // История должна быть неограниченной по размеру
-        int N = 25;
-        for (int i = 0; i < N; i++) {
-            Task t = new Task("T"+i, "d");
+        int n = 25;
+        for (int i = 0; i < n; i++) {
+            Task t = new Task("T" + i, "d");
             taskManager.addTask(t);
             taskManager.getTaskById(t.getId());
         }
-        assertEquals(N, taskManager.getHistory().size(), "История должна быть неограниченной.");
+        assertEquals(n, taskManager.getHistory().size(), "История должна быть неограниченной.");
     }
 
     @Test
     void deletingEpicRemovesItsSubtasksFromManagerAndHistory() {
         // Удаление эпика должно удалять его и его подзадачи из менеджера и из истории
-        Epic e = new Epic("E","d"); taskManager.addEpic(e);
-        Subtask s1 = new Subtask("S1","d", e.getId()); taskManager.addSubtask(s1);
-        Subtask s2 = new Subtask("S2","d", e.getId()); taskManager.addSubtask(s2);
+        Epic e = new Epic("E", "d");
+        taskManager.addEpic(e);
+        Subtask s1 = new Subtask("S1", "d", e.getId());
+        taskManager.addSubtask(s1);
+        Subtask s2 = new Subtask("S2", "d", e.getId());
+        taskManager.addSubtask(s2);
 
         taskManager.getEpicById(e.getId());
         taskManager.getSubtaskById(s1.getId());
@@ -227,9 +239,12 @@ public class TaskManagerTest {
     @Test
     void deletingSubtaskRemovesIdFromEpicAndUpdatesStatus() {
         // При удалении подзадачи её id не должен оставаться внутри эпика; статус эпика пересчитывается
-        Epic e = new Epic("E","d"); taskManager.addEpic(e);
-        Subtask s1 = new Subtask("S1","d", e.getId()); taskManager.addSubtask(s1);
-        Subtask s2 = new Subtask("S2","d", e.getId()); taskManager.addSubtask(s2);
+        Epic e = new Epic("E", "d");
+        taskManager.addEpic(e);
+        Subtask s1 = new Subtask("S1", "d", e.getId());
+        taskManager.addSubtask(s1);
+        Subtask s2 = new Subtask("S2", "d", e.getId());
+        taskManager.addSubtask(s2);
 
         // Смешанные статусы -> IN_PROGRESS
         s1.setStatus(TaskStatus.DONE);
@@ -246,9 +261,12 @@ public class TaskManagerTest {
     @Test
     void epicStatusCalculation_AllCases() {
         // Проверка всех веток расчёта статуса эпика
-        Epic e = new Epic("E","d"); taskManager.addEpic(e);
-        Subtask a = new Subtask("A","d", e.getId()); taskManager.addSubtask(a);
-        Subtask b = new Subtask("B","d", e.getId()); taskManager.addSubtask(b);
+        Epic e = new Epic("E", "d");
+        taskManager.addEpic(e);
+        Subtask a = new Subtask("A", "d", e.getId());
+        taskManager.addSubtask(a);
+        Subtask b = new Subtask("B", "d", e.getId());
+        taskManager.addSubtask(b);
 
         // оба NEW -> NEW
         assertEquals(TaskStatus.NEW, taskManager.getEpicById(e.getId()).getStatus());
@@ -272,7 +290,8 @@ public class TaskManagerTest {
     @Test
     void defensiveCopiesFromManagerAndHistory() {
         // Менеджер и история должны возвращать копии; внешние изменения не влияют на хранимые данные
-        Task t = new Task("X","orig"); taskManager.addTask(t);
+        Task t = new Task("X", "orig");
+        taskManager.addTask(t);
 
         // копия из getTaskById
         Task got = taskManager.getTaskById(t.getId());
@@ -293,8 +312,10 @@ public class TaskManagerTest {
     @Test
     void epicCopyMutationDoesNotAffectStoredEpic() {
         // Мутация списка подзадач у копии эпика не должна менять данные внутри менеджера
-        Epic e = new Epic("E","d"); taskManager.addEpic(e);
-        Subtask s = new Subtask("S","d", e.getId()); taskManager.addSubtask(s);
+        Epic e = new Epic("E", "d");
+        taskManager.addEpic(e);
+        Subtask s = new Subtask("S", "d", e.getId());
+        taskManager.addSubtask(s);
 
         Epic copy = taskManager.getEpicById(e.getId());
         copy.getSubtaskIds().clear(); // меняем копию
@@ -306,18 +327,24 @@ public class TaskManagerTest {
     @Test
     void shouldRejectDuplicateIdsOnAdd() {
         // Попытки добавить сущности с занятым id должны приводить к исключению
-        Task t1 = new Task("T1","d"); taskManager.addTask(t1);
-        Task t2 = new Task("T2","d"); t2.setId(t1.getId());
+        Task t1 = new Task("T1", "d");
+        taskManager.addTask(t1);
+        Task t2 = new Task("T2", "d");
+        t2.setId(t1.getId());
         assertThrows(IllegalArgumentException.class, () -> taskManager.addTask(t2),
                 "Добавление задачи с занятым id должно бросать исключение.");
 
-        Epic e1 = new Epic("E1","d"); taskManager.addEpic(e1);
-        Epic e2 = new Epic("E2","d"); e2.setId(e1.getId());
+        Epic e1 = new Epic("E1", "d");
+        taskManager.addEpic(e1);
+        Epic e2 = new Epic("E2", "d");
+        e2.setId(e1.getId());
         assertThrows(IllegalArgumentException.class, () -> taskManager.addEpic(e2),
                 "Добавление эпика с занятым id должно бросать исключение.");
 
-        Subtask s1 = new Subtask("S1","d", e1.getId()); taskManager.addSubtask(s1);
-        Subtask s2 = new Subtask("S2","d", e1.getId()); s2.setId(s1.getId());
+        Subtask s1 = new Subtask("S1", "d", e1.getId());
+        taskManager.addSubtask(s1);
+        Subtask s2 = new Subtask("S2", "d", e1.getId());
+        s2.setId(s1.getId());
         assertThrows(IllegalArgumentException.class, () -> taskManager.addSubtask(s2),
                 "Добавление подзадачи с занятым id должно бросать исключение.");
     }
@@ -325,7 +352,7 @@ public class TaskManagerTest {
     @Test
     void addingSubtaskForMissingEpicShouldFail() {
         // Добавление подзадачи к несуществующему эпику должно бросать исключение
-        Subtask s = new Subtask("S","d", 9999);
+        Subtask s = new Subtask("S", "d", 9999);
         assertThrows(IllegalArgumentException.class, () -> taskManager.addSubtask(s),
                 "Эпик не найден: должна быть ошибка при добавлении подзадачи.");
     }
