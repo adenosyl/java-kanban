@@ -29,7 +29,7 @@ public interface TaskManager {
     void deleteTask(int id);
 
     void deleteEpic(int id);
-    
+
     void deleteSubtask(int id);
 
     List<Task> getHistory();
