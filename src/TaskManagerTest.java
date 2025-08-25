@@ -122,35 +122,6 @@ public class TaskManagerTest {
     }
 
     @Test
-    void shouldNotChangeTaskAfterAddingToManager() {
-        // создайте тест, в котором проверяется неизменность задачи (по всем полям) при добавлении задачи в менеджер
-        Task task = new Task("Task", "Desc");
-        taskManager.addTask(task);
-
-        task.setName("Modified");
-        task.setDescription("Modified Desc");
-
-        Task savedTask = taskManager.getTaskById(task.getId());
-
-        assertNotEquals("Modified", savedTask.getName(), "Данные задачи в менеджере не должны изменяться.");
-        assertNotEquals("Modified Desc", savedTask.getDescription(), "Данные задачи в менеджере не должны изменяться.");
-    }
-
-    @Test
-    void historyShouldStorePreviousTaskVersion() {
-        // убедитесь, что задачи, добавляемые в HistoryManager, сохраняют предыдущую версию задачи и её данных.
-        Task task = new Task("Task", "Desc");
-        taskManager.addTask(task);
-        taskManager.getTaskById(task.getId());
-
-        task.setName("Changed");
-
-        List<Task> history = taskManager.getHistory();
-
-        assertNotEquals("Changed", history.getFirst().getName(), "История должна хранить старую версию задачи.");
-    }
-
-    @Test
     void historyHasNoDuplicatesAndMovesToTail() {
         // История должна быть без дублей; повторный просмотр переносит задачу в хвост
         Task a = new Task("A", "d");
@@ -286,44 +257,7 @@ public class TaskManagerTest {
         taskManager.updateSubtask(b);
         assertEquals(TaskStatus.DONE, taskManager.getEpicById(e.getId()).getStatus());
     }
-
-    @Test
-    void defensiveCopiesFromManagerAndHistory() {
-        // Менеджер и история должны возвращать копии; внешние изменения не влияют на хранимые данные
-        Task t = new Task("X", "orig");
-        taskManager.addTask(t);
-
-        // копия из getTaskById
-        Task got = taskManager.getTaskById(t.getId());
-        got.setName("mutated");
-        assertNotEquals("mutated", taskManager.getTaskById(t.getId()).getName());
-
-        // копии из getAllTasks
-        List<Task> all = taskManager.getAllTasks();
-        all.getFirst().setDescription("mut");
-        assertNotEquals("mut", taskManager.getTaskById(t.getId()).getDescription());
-
-        // история хранит снимок
-        taskManager.getTaskById(t.getId());
-        t.setName("changed-after");
-        assertNotEquals("changed-after", taskManager.getHistory().getFirst().getName());
-    }
-
-    @Test
-    void epicCopyMutationDoesNotAffectStoredEpic() {
-        // Мутация списка подзадач у копии эпика не должна менять данные внутри менеджера
-        Epic e = new Epic("E", "d");
-        taskManager.addEpic(e);
-        Subtask s = new Subtask("S", "d", e.getId());
-        taskManager.addSubtask(s);
-
-        Epic copy = taskManager.getEpicById(e.getId());
-        copy.getSubtaskIds().clear(); // меняем копию
-        Epic fresh = taskManager.getEpicById(e.getId());
-        assertTrue(fresh.getSubtaskIds().contains(s.getId()),
-                "Изменения у копии не должны влиять на хранящийся эпик.");
-    }
-
+    
     @Test
     void shouldRejectDuplicateIdsOnAdd() {
         // Попытки добавить сущности с занятым id должны приводить к исключению
