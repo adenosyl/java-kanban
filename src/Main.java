@@ -2,7 +2,9 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Поехали!");
         System.out.println();
-        TaskManager taskManager = Managers.getDefault();
+
+        java.io.File store = new java.io.File("tasks.csv");
+        TaskManager taskManager = new FileBackedTaskManager(store);
 
         Task task1 = new Task("Поучиться", "Открыть Яндекс.Практикум и завершить спринт 4");
         Task task2 = new Task("Отдохнуть", "Запустить Dota2 и выиграть мид");
