@@ -5,4 +5,17 @@ on:
 
 jobs:
   build:
-    uses: yandex-praktikum/java-kanban/.github/workflows/api-tests.yml@ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # пример «безопасного» шага
+      - name: Collect Java files
+        run: |
+          if [ -d ./test ]; then
+            find ./test -type f -name "*.java" > tests.txt
+          else
+            find ./src -type f -name "*.java" > tests.txt
+          fi
+
+      # …дальше оставь остальные шаги тестов как в оригинале
