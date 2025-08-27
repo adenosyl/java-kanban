@@ -7,6 +7,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
+    private static final String HEADER = "id,type,name,status,description,epic";
     private final File file;
     private boolean suppressSave = false;
 
@@ -66,57 +67,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void deleteSubtask(int id) {
         super.deleteSubtask(id);
         save();
-    }
-
-    private static final String HEADER = "id,type,name,status,description,epic";
-
-    protected void save() {
-        if (suppressSave) return;
-
-        try {
-            StringBuilder sb = new StringBuilder();
-            sb.append(HEADER).append('\n');
-            for (Task t : getAllTasks()) {
-                sb.append(toCsv(t)).append('\n');
-            }
-            for (Epic e : getAllEpics()) {
-                sb.append(toCsv(e)).append('\n');
-            }
-            for (Subtask s : getAllSubtasks()) {
-                sb.append(toCsv(s)).append('\n');
-            }
-
-            Files.writeString(file.toPath(), sb.toString(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка сохранения в файл: " + file, e);
-        }
-    }
-
-    private static String esc(String s) {
-        return (s == null) ? "" : s.replace("\n", " ");
-    }
-
-    private static String toCsv(Task t) {
-        String type;
-        String epicId = "";
-
-        if (t instanceof Epic) {
-            type = "EPIC";
-        } else if (t instanceof Subtask s) {
-            type = "SUBTASK";
-            epicId = String.valueOf(s.getEpicId());
-        } else {
-            type = "TASK";
-        }
-
-        return String.join(",",
-                String.valueOf(t.getId()),
-                type,
-                esc(t.getName()),
-                t.getStatus().name(),
-                esc(t.getDescription()),
-                epicId
-        );
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
@@ -187,5 +137,54 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             manager.suppressSave = false;
             manager.save();
         }
+    }
+
+    protected void save() {
+        if (suppressSave) return;
+
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(HEADER).append('\n');
+            for (Task t : getAllTasks()) {
+                sb.append(toCsv(t)).append('\n');
+            }
+            for (Epic e : getAllEpics()) {
+                sb.append(toCsv(e)).append('\n');
+            }
+            for (Subtask s : getAllSubtasks()) {
+                sb.append(toCsv(s)).append('\n');
+            }
+
+            Files.writeString(file.toPath(), sb.toString(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка сохранения в файл: " + file, e);
+        }
+    }
+
+    private static String esc(String s) {
+        return (s == null) ? "" : s.replace("\n", " ");
+    }
+
+    private static String toCsv(Task t) {
+        String type;
+        String epicId = "";
+
+        if (t instanceof Epic) {
+            type = "EPIC";
+        } else if (t instanceof Subtask s) {
+            type = "SUBTASK";
+            epicId = String.valueOf(s.getEpicId());
+        } else {
+            type = "TASK";
+        }
+
+        return String.join(",",
+                String.valueOf(t.getId()),
+                type,
+                esc(t.getName()),
+                t.getStatus().name(),
+                esc(t.getDescription()),
+                epicId
+        );
     }
 }
