@@ -1,9 +1,36 @@
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 public class Task {
 
     protected String name;
     protected String description;
     protected int id;
     protected TaskStatus status;
+    protected Duration duration;
+    protected LocalDateTime startTime;
+
+    public Optional<Duration> getDuration() {
+        return Optional.ofNullable(duration);
+    }
+
+    public Optional<LocalDateTime> getStartTime() {
+        return Optional.ofNullable(startTime);
+    }
+
+    public Optional<LocalDateTime> getEndTime() {
+        if (startTime == null || duration == null) return Optional.empty();
+        return Optional.of(startTime.plus(duration));
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 
     public Task(String name, String description) {
         this.name = name;
@@ -16,6 +43,8 @@ public class Task {
         this.description = other.description;
         this.id = other.id;
         this.status = other.status;
+        this.duration = other.duration;
+        this.startTime = other.startTime;
     }
 
     public static Task copyOf(Task t) {
@@ -24,12 +53,14 @@ public class Task {
             Subtask copy = new Subtask(s.getName(), s.getDescription(), s.getEpicId());
             copy.setId(s.getId());
             copy.setStatus(s.getStatus());
+            copy.setStartTime(s.getStartTime().orElse(null));
+            copy.setDuration(s.getDuration().orElse(null));
             return copy;
         } else if (t instanceof Epic e) {
             Epic copy = new Epic(e.getName(), e.getDescription());
             copy.setId(e.getId());
             copy.setStatus(e.getStatus());
-
+            // копируем только список id подзадач (как и раньше)
             for (Integer subId : e.getSubtaskIds()) {
                 copy.addSubtask(subId);
             }
